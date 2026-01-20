@@ -24,6 +24,8 @@ neko_gid: ""
 # The hostname at which Neko is served.
 neko_hostname: ""
 
+# The path at which Neko is served.
+# This value must either be `/` or not end with a slash (e.g. `/neko`).
 neko_path_prefix: /
 
 # Warning: setting the Chromium-based browser available for Neko enables SYS_ADMIN capability
@@ -45,13 +47,13 @@ neko_container_image_self_build_src_files_path: "{{ neko_base_path }}/docker-src
 neko_container_image_self_build_repo_dockerfile_dir: "{{ neko_container_image_self_build_src_files_path }}/apps/{{ neko_container_image_app }}"
 neko_container_image_self_build_repo_dockerfile: "Dockerfile"
 
-# Controls whether the Neko container exposes its HTTP port (as defined by `neko_container_http_port`).
-#
-# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:8731"), or empty string to not expose.
-neko_container_http_host_bind_port: ""
-
 # The base container network. It will be auto-created by this role if it doesn't exist already.
-neko_container_network: '{{ neko_identifier }}'
+neko_container_network: "{{ neko_identifier }}"
+
+# Specify how the container publishes its HTTP port (as defined by `neko_container_http_port`).
+#
+# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
+neko_container_http_host_bind_port: ""
 
 # The port number in the container
 neko_container_http_port: 8080
@@ -75,7 +77,7 @@ neko_container_additional_volumes_custom: []
 # neko_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `../templates/labels.j2` for details.
 #
-# To inject your own other container labels, see `neko_container_labels_additional_labels`.
+# To inject your own other container labels, see `neko_container_labels_additional_labels_custom`.
 neko_container_labels_traefik_enabled: true
 neko_container_labels_traefik_docker_network: "{{ neko_container_network }}"
 neko_container_labels_traefik_hostname: "{{ neko_hostname }}"
@@ -112,12 +114,15 @@ neko_container_labels_traefik_additional_response_headers_custom: {}
 # To add your own custom labels, use `neko_container_labels_additional_labels_custom`
 #
 # Example:
-# neko_container_labels_additional_labels_custom: |
-#   my.label=1
-#   another.label="here"
-neko_container_labels_additional_labels: "{{ neko_container_labels_additional_labels_auto | combine(neko_container_labels_additional_labels_custom) }}"
-neko_container_labels_additional_labels_auto: {}
-neko_container_labels_additional_labels_custom: {}
+# neko_container_labels_additional_labels_custom:
+#   - my.label=1
+#   - another.label="here"
+neko_container_labels_additional_labels: "{{ neko_container_labels_additional_labels_auto + neko_container_labels_additional_labels_custom }}"
+neko_container_labels_additional_labels_auto: []
+neko_container_labels_additional_labels_custom: []
+
+# Specify the size of the container's tmpfs volume
+neko_container_tmpfs_tmp_size: 128m
 
 # A list of extra arguments to pass to the container (`docker create` command)
 neko_container_extra_arguments: "{{ neko_container_extra_arguments_auto + neko_container_extra_arguments_custom }}"
