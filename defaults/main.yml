@@ -32,7 +32,7 @@ neko_path_prefix: /
 # See: https://neko.m1k1o.net/docs/v3/installation/docker-images#chromium-based-browsers
 neko_container_image_app: "firefox"
 
-neko_container_image: "{{ neko_container_image_registry_prefix }}legitservices/neko/{{ neko_container_image_tag }}"
+neko_container_image: "{{ neko_container_image_registry_prefix }}legitservices/{{ neko_container_image_tag }}"
 neko_container_image_tag: "{{ neko_container_image_app }}:{{ neko_version }}"
 neko_container_image_registry_prefix: "{{ neko_container_image_registry_prefix_upstream }}"
 neko_container_image_registry_prefix_upstream: "{{ neko_container_image_registry_prefix_upstream_default }}"
